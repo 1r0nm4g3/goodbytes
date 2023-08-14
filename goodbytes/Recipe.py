@@ -14,8 +14,8 @@ class Ingredient:
         self.name = name
     
     def __repr__(self) -> str:
-        return f'{self.quantity} {self.unit} {self.name}'
-
+        return f"{{'quantity': '{self.quantity}', 'unit': '{self.unit}', 'name': '{self.name}'}}"
+    
 def create_ingredient(soup):
     quantity = soup.find('span', {'data-ingredient-quantity': 'true'}).text if soup.find('span', {'data-ingredient-quantity': 'true'}) else None
     unit = soup.find('span', {'data-ingredient-unit': 'true'}).text if soup.find('span', {'data-ingredient-unit': 'true'}) else None
@@ -29,7 +29,7 @@ class Recipe:
         self.soup = self._get_soup(url)
 
     def __repr__(self) -> str:
-        return f'Recipe: {self.recipe_name}\nRating: {self.rating} ({self.reviews})\nIngredients: {self.ingredients}\nDirections: {self.directions}'
+        return f'Recipe: {self.recipe_name}\nRating: {self.rating} ({self.reviews})\nIngredients: {self.ingredients}\nDirections: {self.directions}\nNutrition: {self.calories} calories, {self.fat}g fat, {self.carbs}g carbs, {self.protein}g protein'
 
     def _get_soup(self, url=None):
         response = requests.get(url) if url else requests.get(self.url)
@@ -60,17 +60,32 @@ class Recipe:
     
     def _get_directions(self):
         steps = self.soup.find('div', {'id': 'recipe__steps-content_1-0'})
+        for figcaption in steps.find_all('figcaption'):
+            figcaption.decompose()
         self.directions = strip_line_breaks(steps.text)
         return self.directions
     
+    def _get_nutrition(self):
+        nutrition_info = self.soup.find_all('td', {'class': 'mntl-nutrition-facts-summary__table-cell type--dog-bold'})
+        self. calories = nutrition_info[0].text
+        self.fat = nutrition_info[1].text[0:-2]
+        self.carbs = nutrition_info[2].text[0:-2]
+        self.protein = nutrition_info[3].text[0:-2]
+        return self.calories, self.fat, self.carbs, self.protein
+
     def _get_recipe(self):
         self._get_rating()
         self._get_reviews()
         self._get_recipe_name()
         self._get_ingredients()
         self._get_directions()
+        self._get_nutrition()
 
 if __name__ == '__main__':
     url = 'https://www.allrecipes.com/crockpot-italian-chicken-recipe-7501402'
+    test_recipe = Recipe(url)
+    print(test_recipe)
+
+    url = 'https://www.allrecipes.com/recipe/216888/good-new-orleans-creole-gumbo/'
     test_recipe = Recipe(url)
     print(test_recipe)
