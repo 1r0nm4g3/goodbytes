@@ -57,4 +57,4 @@ class Scrapper:
 if __name__ == '__main__':
     sitemap_url = 'https://www.allrecipes.com/sitemap.xml'
     scrapper = Scrapper(sitemap_url)
-    scrapper.parse(i=100)
+    scrapper.parse()
