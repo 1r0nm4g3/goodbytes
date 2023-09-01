@@ -161,4 +161,9 @@ cython_debug/
 
 .vscode/
 
+output.json
 scrapper_results.csv
+processed_recipes.csv
+processed_recipes_2.csv
+processed_recipes_2.json
+recipe_text.txt
