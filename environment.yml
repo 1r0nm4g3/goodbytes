@@ -2,6 +2,8 @@ name: goodbytes
 channels:
   - conda-forge
   - defaults
+  - pytorch
+  - nvidia
 dependencies:
   - python=3.10
   - pandas
@@ -9,11 +11,14 @@ dependencies:
   - matplotlib
   - seaborn
   - scikit-learn
-  - pytorch
+  - pytorch::pytorch
   - torchvision
-  - cudatoolkit=11.3
+  - torchaudio
+  - pytorch-cuda=11.8
   - pip
   - transformers
+  - huggingface_hub
+  - datasets
   - bs4
   - nltk
   - inflect
@@ -21,3 +26,5 @@ dependencies:
   - sentencepiece
   - pip:
     - accelerate
+    - peft
+    - bitsandbytes
